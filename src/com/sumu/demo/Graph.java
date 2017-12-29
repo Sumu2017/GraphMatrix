@@ -18,6 +18,42 @@ public class Graph {
 	}
 
 	/**
+	 * 普里姆算法
+	 * 1、首先将a0全部存入lowCost数组，当成默认最小权值数组
+	 * 2、然后获取最小权值数组里面最小的权值的下标的数组(a0最小权值是10,对应的数组为a1)
+	 * 3、然后将lowCost跟a1数组进行对比，如果a1[i]<lowCost[i]，则lowCost[i]=a1[i];
+	 * 4、重复2、3步骤直到最后
+	 */
+	public void prim() {
+		int[] lowCost = new int[vertexSize];//最小顶点权值的数组,为0表示已经获取最小权值
+		for (int i = 0; i < vertexSize; i++) {
+			lowCost[i] = matrix[0][i];//首先将a0顶点相关权值存入数组，
+		}
+		int min,minId,sum=0;
+		for (int i = 1; i < vertexSize; i++) {
+			min=MAX_WEIGHT;//初始化最小权值为无穷数
+			minId=0;
+			for (int j = 0; j < vertexSize; j++) {
+				if (lowCost[j]>0&&lowCost[j]<=min) {
+					//遍历当前最小权值数组，获取最小权值，0代表已经获取最小权值
+					min=lowCost[j];
+					minId=j;
+				}
+			}
+			lowCost[minId]=0;
+			System.out.println("普里姆算法 顶点："+minId+" 权值："+min);
+			sum+=min;
+			for (int j = 0; j < vertexSize; j++) {
+				//最小顶点权值的数组，与最小顶点相关边权值进行对比，如果比最小顶点权值小，则替换
+				if (lowCost[j]!=0&&matrix[minId][j]<lowCost[j]) {
+					lowCost[j]=matrix[minId][j];
+				}
+			}
+		}
+		System.out.println("普里姆算法最小生成树:"+sum);
+	}
+
+	/**
 	 * 广度遍历优先
 	 */
 	public void broadFirstSearch() {
@@ -31,22 +67,23 @@ public class Graph {
 
 	/**
 	 * 广度遍历优先
+	 * 
 	 * @param i
 	 */
 	private void broadFirstSearch(int index) {
 		// TODO Auto-generated method stub
-		int queueIndex,neighborIndex;
+		int queueIndex, neighborIndex;
 		System.out.println("broadFirstSearch 遍历到了：" + vertexs[index]);
-		isVisited[index]=true;
-		LinkedList<Integer> queue=new LinkedList<>();
+		isVisited[index] = true;
+		LinkedList<Integer> queue = new LinkedList<>();
 		queue.add(index);
 		while (!queue.isEmpty()) {
 			queueIndex = queue.removeFirst().intValue();
 			neighborIndex = getFirstNeighbor(queueIndex);
-			while (neighborIndex!=-1) {
+			while (neighborIndex != -1) {
 				if (!isVisited[neighborIndex]) {
 					System.out.println("broadFirstSearch 遍历到了：" + vertexs[neighborIndex]);
-					isVisited[neighborIndex]=true;
+					isVisited[neighborIndex] = true;
 					queue.add(neighborIndex);
 				}
 				neighborIndex = getNextNeighbor(queueIndex, neighborIndex);
@@ -89,7 +126,7 @@ public class Graph {
 	/**
 	 * 根据前一个邻接点的下标来取得下一个邻接点
 	 * 
-	 * @param index  
+	 * @param index
 	 *            顶点
 	 * @param neighborIndex
 	 *            邻接点下标 相对于该邻接点去获取下一个邻接点
@@ -256,9 +293,10 @@ public class Graph {
 
 		// System.out.println(" "+graph.getWeight(graph.vertexs[1], graph.vertexs[2]));
 
-		// graph.print();
-		//graph.depthFirstSearch();
-		graph.broadFirstSearch();
+		//graph.print();
+		// graph.depthFirstSearch();
+		// graph.broadFirstSearch();
+		graph.prim();
 
 	}
 }
